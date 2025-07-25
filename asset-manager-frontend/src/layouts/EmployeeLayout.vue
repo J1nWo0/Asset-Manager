@@ -1,0 +1,49 @@
+<script setup>
+import Sidebar from "@/components/common/Sidebar.vue";
+import { Menu } from "lucide-vue-next";
+import { computed, provide, ref } from "vue";
+import { useRoute } from "vue-router";
+
+const isSidebarOpen = ref(true);
+provide("isSidebarOpen", isSidebarOpen);
+
+const route = useRoute();
+
+const currentPage = computed(() => {
+    return route.meta.title || route.name || route.path;
+});
+</script>
+
+<template>
+    <div class="flex">
+        <!-- Sidebar -->
+        <Sidebar
+            v-if="isSidebarOpen"
+            class="w-64 fixed top-0 left-0 h-full shadow z-50"
+        />
+
+        <!-- Main Content -->
+        <div
+            :class="[
+                isSidebarOpen ? 'ml-64' : 'ml-0',
+                'transition-all duration-300 flex-1',
+            ]"
+        >
+            <!-- Top Nav -->
+            <nav class="h-16 px-6 flex items-center shadow">
+                <Menu
+                    @click="isSidebarOpen = !isSidebarOpen"
+                    class="w-6 h-6 text-primary cursor-pointer"
+                />
+                <span class="ml-4 text-lg text-white font-medium capitalize">
+                    {{ currentPage }}
+                </span>
+            </nav>
+
+            <!-- Page Content -->
+            <div class="p-4 bg-[#18181B]">
+                <RouterView />
+            </div>
+        </div>
+    </div>
+</template>
